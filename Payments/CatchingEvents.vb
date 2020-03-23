@@ -124,10 +124,11 @@ Friend Class CatchingEvents
     '// CONTROLADOR DE EVENTOS FORMA PEDIDOS DE COMPRAS
     '//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     Private Sub frmPOControllerAfter(ByVal FormUID As String, ByVal pVal As SAPbouiCOM.ItemEvent)
-        Dim oPO As PO
-        Dim otekPagos As FrmtekPagos
+        'Dim oPO As PO
+        'Dim otekPagos As FrmtekPagos
         Dim coForm As SAPbouiCOM.Form
-        Dim DocNum, stTabla, DocCur As String
+        Dim DocNum, stTabla, Comments, Fecha, CardCode As String
+        Dim DocTotal, DocEntry As Integer
         Dim stQueryH As String
         Dim oRecSetH As SAPbobsCOM.Recordset
         Dim oDatatable As SAPbouiCOM.DBDataSource
@@ -144,24 +145,17 @@ Friend Class CatchingEvents
                                     '--- Boton Movimientos del Pedido
                         Case 1
 
-                            stTabla = "OPOR"
+                            stTabla = "ORCT"
                             coForm = SBOApplication.Forms.Item(FormUID)
 
                             oDatatable = coForm.DataSources.DBDataSources.Item(stTabla)
                             DocNum = oDatatable.GetValue("DocNum", 0)
-                            DocCur = oDatatable.GetValue("DocCur", 0)
+                            Comments = oDatatable.GetValue("Comments", 0)
+                            Fecha = oDatatable.GetValue("DocDate", 0)
+                            DocTotal = oDatatable.GetValue("DocTotal", 0)
+                            CardCode = oDatatable.GetValue("CardCode", 0)
 
-                            If DocCur = "MXN" Then
-                                DocTotal = oDatatable.GetValue("DocTotal", 0)
-                            Else
-                                DocTotal = oDatatable.GetValue("DocTotalFC", 0)
-                            End If
-
-                            If (DocNum Is Nothing) Or (DocNum = "") Then
-                                DocNum = "0"
-                            End If
-
-                            stQueryH = "Select T1.""DocEntry"" from ""OPOR"" T1 where T1.""DocNum""=" & DocNum
+                            stQueryH = "Select Top 1 T1.""DocEntry"" from ORCT T0 inner join RCT2 T1 on T0.""DocNum""=T1.""DocNum"" and T1.""InvType""=13 where T0.""DocNum""=" & DocNum & " order by T1.""DocEntry"" asc"
                             oRecSetH.DoQuery(stQueryH)
 
                             If oRecSetH.RecordCount > 0 Then
@@ -169,9 +163,11 @@ Friend Class CatchingEvents
                                 oRecSetH.MoveFirst()
                                 DocEntry = oRecSetH.Fields.Item("DocEntry").Value
 
-                                otekPagos = New FrmtekPagos
-                                MontoAcumulado = otekPagos.openForm(csDirectory, DocEntry, DocTotal)
-                                otekPagos.cargarMovimientos(DocEntry)
+                                SBOApplication.MessageBox("Cuenta:" & Comments & " Fecha:" & Fecha & " Total:" & DocTotal & " Cliente:" & CardCode & " DocENtry:" & DocEntry)
+
+                                'otekPagos = New FrmtekPagos
+                                'MontoAcumulado = otekPagos.openForm(csDirectory, DocEntry, DocTotal)
+                                'otekPagos.cargarMovimientos(DocEntry)
 
                             End If
 
