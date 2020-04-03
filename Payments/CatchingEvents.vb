@@ -212,7 +212,7 @@ Friend Class CatchingEvents
                                 oRecSetH.MoveFirst()
                                 DocEntry = oRecSetH.Fields.Item("DocEntry").Value
 
-                                SBOApplication.MessageBox("Cuenta:" & Comments & " Fecha:" & Fecha & " Total:" & DocTotal & " Cliente:" & CardCode & " DocENtry:" & DocEntry)
+                                'SBOApplication.MessageBox("Cuenta:" & Comments & " Fecha:" & Fecha & " Total:" & DocTotal & " Cliente:" & CardCode & " DocENtry:" & DocEntry)
 
                                 oOBNK = New OBNK
                                 oOBNK.UpdateOBNK(Comments, Fecha, DocTotal, CardCode, DocEntry)
