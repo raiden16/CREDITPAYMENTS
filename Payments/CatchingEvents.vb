@@ -12,7 +12,7 @@ Friend Class CatchingEvents
     Public Sub New()
         MyBase.New()
         SetAplication()
-        SetConnectionContext()
+        SetConnectionContext() 
         ConnectSBOCompany()
 
         setFilters()
@@ -23,14 +23,14 @@ Friend Class CatchingEvents
     Private Sub SetAplication()
         Dim SboGuiApi As SAPbouiCOM.SboGuiApi
         Dim sConnectionString As String
-        Try
+        Try 
             SboGuiApi = New SAPbouiCOM.SboGuiApi
             sConnectionString = Environment.GetCommandLineArgs.GetValue(1)
             SboGuiApi.Connect(sConnectionString)
             SBOApplication = SboGuiApi.GetApplication()
         Catch ex As Exception
             SBOApplication.MessageBox("Falló la conexión con la aplicación SBO " & ex.Message)
-            System.Windows.Forms.Application.Exit()
+            System.Windows.Forms.Application.Exit() 
             End
         End Try
     End Sub
